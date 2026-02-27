@@ -1,0 +1,2 @@
+# Conception_developpement_BDD_MERISE_mini-projet-Anissa_MOHAMED
+Projet de conception de base de données (méthode MERISE) pour la maintenance aéronautique (MRO), inspiré de Dassault Aviation. Il contient l'analyse des besoins via prompt IA (RICARDO), le dictionnaire de données optimisé et un MCD normé (3FN, entité faible, association récursive). Réalisé pour le module Base de données 1 : concepts de base 
