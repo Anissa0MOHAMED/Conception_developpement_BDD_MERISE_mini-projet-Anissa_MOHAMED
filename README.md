@@ -71,10 +71,7 @@ Afin de simuler les échanges avec l'entreprise cliente, nous avons utilisé le 
 | Pourcentage de carburant durable (SAF) | INT | - |
 | Réduction d'émissions de CO2 estimée | INT | - |
 
-### 3. Modifications apportées suite à l'analyse IA
-L'IA a initialement fourni un dictionnaire de données contenant des redondances géographiques (ville et pays directement liés au centre de maintenance). 
-Afin de préparer un Modèle Conceptuel de Données (MCD) respectant strictement la 3ème Forme Normale (3FN), nous avons manuellement modifié le dictionnaire pour intégrer des identifiants géographiques dédiés (ex: `id_ville`). Nous avons également spécifié des types SQL optimisés (utilisation de `DECIMAL` pour la précision des mesures aéronautiques et de `INT` pour minimiser le poids en mémoire).
-
+INT à 32 bits par défaut 
 ---
 
 ## Étape 2 : Modèle Conceptuel de Données (MCD)
@@ -83,10 +80,3 @@ Afin de préparer un Modèle Conceptuel de Données (MCD) respectant strictement
 MCD_Dassault.png
 
 *(Note : le fichier source de ce MCD est disponible dans ce dépôt Github).*
-
-### 2. Choix de modélisation et contraintes respectées
-Conformément aux attentes du projet, ce MCD intègre :
-* **Le respect de la 3FN :** Séparation des données géographiques en entités distinctes (`VILLE`, `PAYS`) pour éviter les dépendances transitives (le pays dépendait de la ville dans la proposition initiale de l'IA).
-* **Une Entité Faible (Identification relative) :** L'entité `INTERVENTION` est dépendante de l'entité forte `AVION`. Un numéro d'intervention n'a de sens que s'il est rattaché au numéro de série d'un aéronef précis.
-* **Une Association Récursive :** L'association `superviser` sur l'entité `CENTRE_MAINTENANCE` (0,1 / 0,n) permet de modéliser l'architecture réseau de l'entreprise, où un hub central principal supervise des stations-services locales.
-* **Cardinalité métier spécifique :** La relation `AVION` vers l'association `Acheter` a été fixée à **0,1**. En effet, en tant que constructeur (et non simple compagnie aérienne), un avion physique peut exister (être en phase de test ou en stock) sans être encore rattaché à un client.
