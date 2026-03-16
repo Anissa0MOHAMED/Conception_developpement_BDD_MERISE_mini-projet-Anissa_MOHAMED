@@ -99,7 +99,6 @@ J'y ai intégré une présentation claire pour le Modèle Logique de Données (M
 
 ### III.A. Modèle Logique de Données (MLD)
 
-*Note : Les clés primaires sont en **gras**, les clés étrangères sont précédées d'un `#`, et les attributs optionnels sont suivis d'un `*`.*
 
 * **Modele** = (**Id_modele** INT, nom_modele VARCHAR(50), envergure DECIMAL(5,2), longueur_ DECIMAL(5,2), hauteur DECIMAL(5,2), masse_vide INT, masse_max INT, capacite_emport INT, Categorie VARCHAR(15), Autonomie INT, vitesse_mach DECIMAL(3,2), nom_moteur VARCHAR(50))
 * **CONTRAT** = (**id_contrat_** INT, nom_contrat VARCHAR(50), formule VARCHAR(20), taux_de_dispo INT)
@@ -115,8 +114,8 @@ J'y ai intégré une présentation claire pour le Modèle Logique de Données (M
 
 La traduction de ce modèle en base de données physique est disponible dans les scripts suivants :
 
-* 1_creation.sql * : Script de création des tables incluant la gestion automatique des suppressions et modifications (ON DELETE CASCADE / SET NULL).
-* _contraintes.sql * : Script d'implémentation des contraintes de validation métier (CHECK) et d'unicité.
+[1_creation.sql](./1_creation.sql) : Script de création des tables incluant la gestion automatique des suppressions et modifications (ON DELETE CASCADE / SET NULL).
+[2_contraintes.sql](./2_contraintes.sql): Script d'implémentation des contraintes de validation métier (CHECK) et d'unicité.
 
 ---
 
@@ -133,7 +132,7 @@ Les données de ce projet ont été générées automatiquement à l'aide d'une 
 
 *Le script SQL résultant de ce prompt est disponible ici :*
 
-* 3_insertion.sql*
+[3_insertion.sql](./3_insertion.sql)
 
 ---
 
@@ -141,7 +140,7 @@ Les données de ce projet ont été générées automatiquement à l'aide d'une 
 
 *Afin de démontrer la polyvalence et la robustesse de notre modèle relationnel, la base de données a été conçue pour répondre aux besoins croisés de plusieurs départements. L'ensemble des requêtes permettant d'extraire les données pour les rôles ci-dessous est centralisé dans le fichier suivant :*
 
-*  4_interrogation.sql*
+[4_interrogation.sql](./4_interrogation.sql)
 
 ### 1. Le Responsable du Support Opérationnel (MCO) - *Scénario Principal*
 
