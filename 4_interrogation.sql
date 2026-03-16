@@ -1,5 +1,3 @@
-
-
 -- Obtenir la liste des codes aéroports uniques depuis lesquels nos avions ont décollé, par ordre alphabétique.
 -- Utilité : Cartographier les aéroports de départ habituels de la flotte.
 SELECT DISTINCT aeroport_depart 
@@ -31,11 +29,10 @@ FROM AVION
 WHERE configuration_cabine IN ('Tactique', 'Surveillance') 
 ORDER BY code_pays DESC, id_client ASC;
 
-
-
 -- Calculer le temps de vol total accumulé par chaque avion physique (qui a volé plus de 200 minutes au total).
 -- Utilité : Identifier les cellules nécessitant une révision approfondie (calcul du MTBF).
-SELECT Num_serie, SUM(duree_vol_minutes) as Total_Heures_Vol
+
+SELECT Num_serie, SUM(duree_vol_minutes) / 60.0 as Total_Heures_Vol
 FROM VOL 
 GROUP BY Num_serie 
 HAVING SUM(duree_vol_minutes) > 200;
@@ -47,7 +44,7 @@ FROM VOL
 GROUP BY Num_serie 
 HAVING AVG(pourcentage_carburant_vert) > 10;
 
--- 8. Compter le nombre d'interventions réalisées par chaque centre de maintenance, pour les centres ayant fait au moins 2 interventions.
+-- Compter le nombre d'interventions réalisées par chaque centre de maintenance, pour les centres ayant fait au moins 2 interventions.
 -- Utilité : Évaluer la charge de travail et répartir les effectifs mécaniciens.
 SELECT id_centre, COUNT(num_intervention_avion) as Nombre_Interventions 
 FROM INTERVENTION 
@@ -82,9 +79,11 @@ LEFT OUTER JOIN AVION a ON m.Id_modele = a.Id_modele;
 
 -- Connaître le détail complet d'un vol : l'identifiant du vol, le nom du modèle de l'avion, son numéro de série, et le nom du client propriétaire.
 -- Utilité : Tracer la responsabilité d'un vol spécifique en cas d'incident.
+
 SELECT v.id_vol, m.nom_modele, a.Num_serie, c.nom_client 
 FROM VOL v 
 INNER JOIN AVION a ON v.Id_modele = a.Id_modele AND v.Num_serie = a.Num_serie
+INNER JOIN Modele m ON a.Id_modele = m.Id_modele
 INNER JOIN CLIENT c ON a.code_pays = c.code_pays AND a.id_client = c.id_client;
 
 -- Afficher toutes les villes enregistrées et les centres de maintenance qui s'y trouvent, même si une ville n'a pas (encore) de centre.
@@ -104,17 +103,11 @@ AND secondaire.id_centre_principal = principal.id_centre;
 
 -- Lister le nom des clients qui possèdent au moins un modèle d'avion de la catégorie 'Militaire'.
 -- Utilité : Filtrer la base de données client pour des communications de niveau secret défense.
-SELECT nom_client 
-FROM CLIENT 
-WHERE id_client IN (
-    SELECT id_client 
-    FROM AVION 
-    WHERE Id_modele IN (
-        SELECT Id_modele 
-        FROM Modele 
-        WHERE Categorie = 'Militaire'
-    )
-);
+SELECT DISTINCT c.nom_client 
+FROM CLIENT c
+INNER JOIN AVION a ON c.code_pays = a.code_pays AND c.id_client = a.id_client
+INNER JOIN Modele m ON a.Id_modele = m.Id_modele
+WHERE m.Categorie = 'Militaire';
 
 -- Trouver les numéros de série des avions qui n'ont ENCORE JAMAIS subi d'intervention de maintenance.
 -- Utilité : Détecter les avions sortis récemment d'usine ou ceux qui ne respectent pas le calendrier de révision.
@@ -149,7 +142,7 @@ WHERE taux_de_dispo < ANY (
 
 -- Trouver les modèles d'avions (nom et catégorie) pour lesquels il y a eu au moins un vol enregistré avec plus de 20% de réduction CO2.
 -- Utilité : Faire une plaquette marketing sur les modèles les plus performants en écologie.
-SELECT nom_modele, Categorie 
+SELECT m.nom_modele, m.Categorie 
 FROM Modele m 
 WHERE EXISTS (
     SELECT 1 
